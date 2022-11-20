@@ -1,0 +1,53 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+	content: ['./src/**/*.{js,jsx,ts,tsx}'],
+	theme: {
+		extend: {},
+		screens: {
+			sm: '640px',
+			md: '768px',
+			lg: '1024px',
+			xl: '1280px',
+			'2xl': '1536px',
+		},
+		colors: ({ colors }) => ({
+			inherit: colors.inherit,
+			current: colors.current,
+			transparent: colors.transparent,
+			black: colors.black,
+			white: colors.white,
+			slate: colors.slate,
+			gray: colors.gray,
+			zinc: colors.zinc,
+			neutral: colors.neutral,
+			stone: colors.stone,
+			red: colors.red,
+			orange: colors.orange,
+			amber: colors.amber,
+			yellow: colors.yellow,
+			lime: colors.lime,
+			green: colors.green,
+			emerald: colors.emerald,
+			teal: colors.teal,
+			cyan: colors.cyan,
+			sky: colors.sky,
+			blue: colors.blue,
+			indigo: colors.indigo,
+			violet: colors.violet,
+			purple: colors.purple,
+			fuchsia: colors.fuchsia,
+			pink: colors.pink,
+			rose: colors.rose,
+			primary: {
+				500: '#212356',
+			},
+			secondary: {
+				500: '#C76542',
+			},
+			blacktransparent: {
+				500: 'rgba(0,0,0,0.3)',
+			},
+		}),
+	},
+	plugins: [],
+};

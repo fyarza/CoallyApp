@@ -18,6 +18,7 @@ import { useColorScheme } from "react-native"
 import Config from "../config"
 import { useStores } from "../models" // @demo remove-current-line
 import {
+  IntroScreen,
   LoginScreen, // @demo remove-current-line
   WelcomeScreen,
 } from "../screens"
@@ -38,6 +39,7 @@ import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
  *   https://reactnavigation.org/docs/typescript/#organizing-types
  */
 export type AppStackParamList = {
+  Intro: undefined
   Welcome: undefined
   Login: undefined // @demo remove-current-line
   Demo: NavigatorScreenParams<DemoTabParamList> // @demo remove-current-line
@@ -68,7 +70,7 @@ const AppStack = observer(function AppStack() {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName={isAuthenticated ? "Welcome" : "Login"} // @demo remove-current-line
+      initialRouteName={isAuthenticated ? "Welcome" : "Intro"} // @demo remove-current-line
     >
       {/* @demo remove-block-start */}
       {isAuthenticated ? (
@@ -80,6 +82,7 @@ const AppStack = observer(function AppStack() {
         </>
       ) : (
         <>
+          <Stack.Screen name="Intro" component={IntroScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
         </>
       )}

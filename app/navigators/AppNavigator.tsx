@@ -4,6 +4,7 @@
  * Generally speaking, it will contain an auth flow (registration, login, forgot password)
  * and a "main" flow which the user will use once logged in.
  */
+import { RegisterScreen } from "@/screens/register/registerScreen"
 import {
   DarkTheme,
   DefaultTheme,
@@ -42,6 +43,7 @@ export type AppStackParamList = {
   Intro: undefined
   Welcome: undefined
   Login: undefined // @demo remove-current-line
+  Register: undefined
   Demo: NavigatorScreenParams<DemoTabParamList> // @demo remove-current-line
   // 🔥 Your screens go here
 }
@@ -84,6 +86,7 @@ const AppStack = observer(function AppStack() {
         <>
           <Stack.Screen name="Intro" component={IntroScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Register" component={RegisterScreen} />
         </>
       )}
       {/* @demo remove-block-end */}

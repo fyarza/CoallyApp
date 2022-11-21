@@ -9,26 +9,39 @@ import { Formik } from "formik"
 import * as Yup from "yup"
 import Input from "@/components/input/input"
 import Feather from "@expo/vector-icons/Feather"
-import AntDesign from "@expo/vector-icons/AntDesign"
 import Button from "@/components/custom-button/custom-button"
+import AntDesign from "@expo/vector-icons/AntDesign"
+import Dropdown from "react-native-picker-select"
 import { observer } from "mobx-react-lite"
-import { dlog } from "@/utils/functions"
+import { Select } from "@/components"
 
-interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
+interface RegisterScreenProps extends AppStackScreenProps<"Register"> {}
 
-export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_props) {
+export const RegisterScreen: FC<RegisterScreenProps> = observer(function RegisterScreen(_props) {
+  // Pull in one of our MST stores
+  // const { someStore, anotherStore } = useStores()
+
   const { navigation } = _props
+
   const [isVisible, setIsVisible] = useState(false)
+  const [isVisible2, setIsVisible2] = useState(false)
   const refPassword = useRef<TextInput>(null)
+  const refPasswordConfirm = useRef<TextInput>(null)
   const [check, setCheck] = useState(false)
   const initialValues = {
     email: "",
     password: "",
+    confirmPassword: "",
+    userType: "",
   }
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().email("Correo Invalido").required("Es requerido"),
     password: Yup.string().required("Es requerido"),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("password"), null], "Las contraseñas deben coincidir")
+      .required("Es requerido"),
+    userType: Yup.string().required("Es requerido"),
   })
 
   const onSubmit = (values: any, actions: any) => {
@@ -37,9 +50,13 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
       actions.setSubmitting(false)
     }, 3000)
   }
-
   return (
-    <Screen preset="auto" safeAreaEdges={["bottom"]} backgroundColor={colors.background}>
+    <Screen
+      preset="auto"
+      safeAreaEdges={["bottom"]}
+      backgroundColor={colors.background}
+      statusBarStyle="light"
+    >
       <View style={tw`h-60 rounded-b-[55px] bg-primary-500 w-full self-center`}>
         <View style={tw`flex-row items-center justify-end px-6 mt-15`}>
           <Text style={tw`mr-2 text-lg font-black text-white`}>SP</Text>
@@ -49,8 +66,8 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
           <LogoCoally />
         </View>
       </View>
-      <View style={tw`mt-10`}>
-        <Text style={tw`text-base font-black text-center text-black`}>Iniciar Sesión</Text>
+      <View style={tw`mt-6`}>
+        <Text style={tw`text-base font-black text-center text-black`}>Regístrate</Text>
         <View style={tw`px-6 mt-10`}>
           <Formik
             initialValues={initialValues}
@@ -59,6 +76,30 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
           >
             {(formik) => (
               <>
+                <Select
+                  items={[
+                    { label: "Empresa", value: "EMP" },
+                    { label: "Profesional", value: "PROF" },
+                  ]}
+                  placeholder="seleccione.."
+                  onValueChange={(e) => {
+                    formik.setFieldValue("userType", e)
+                  }}
+                  error={"userType" in formik.errors ? formik.errors.userType : ""}
+                />
+                {/* <Dropdown
+                  placeholder={{ label: "Seleccione", value: "" }}
+                  onValueChange={(value) => console.log(value)}
+                  items={[
+                    { label: "Empresa", value: "EMP" },
+                    { label: "Profesional", value: "PROF" },
+                  ]}
+                  style={{
+                    inputIOS: tw`text-base text-gray-500 bg-white`,
+                    inputAndroid: tw`text-xs text-gray-500 bg-white`,
+                    viewContainer: tw`mb-5 border border-red-500`,
+                  }}
+                /> */}
                 <Input
                   keyboardType="email-address"
                   autoCapitalize="none"
@@ -94,11 +135,33 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
                   }
                   returnKeyType="send"
                   onSubmitEditing={() => {
+                    refPasswordConfirm?.current?.focus()
+                  }}
+                />
+                <Input
+                  ref={refPasswordConfirm}
+                  secureTextEntry={!isVisible2}
+                  placeholder="Confirmar Contraseña"
+                  contenStyle={tw`px-3`}
+                  containerStyle={tw`w-full`}
+                  value={formik.values.confirmPassword}
+                  onChangeText={formik.handleChange("confirmPassword")}
+                  error={"confirmPassword" in formik.errors ? formik.errors.confirmPassword : ""}
+                  RightIconComponent={
+                    <Feather
+                      name={isVisible2 ? "eye-off" : "eye"}
+                      size={24}
+                      onPress={() => {
+                        setIsVisible2(!isVisible2)
+                      }}
+                    />
+                  }
+                  returnKeyType="send"
+                  onSubmitEditing={() => {
                     console.log("sent")
                   }}
                 />
-
-                <View style={tw`flex-row items-center justify-between mb-10`}>
+                <View style={tw`flex-row items-center justify-between mb-8`}>
                   <View style={tw`flex-row items-center`}>
                     <TouchableNativeFeedback
                       background={TouchableNativeFeedback.Ripple("#fff", true)}
@@ -110,18 +173,14 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
                         <View style={tw`w-5 h-5 border border-gray-300 rounded-full`} />
                       )}
                     </TouchableNativeFeedback>
-                    <Text style={tw`ml-1 text-sm text-gray-500`}>Recordarme</Text>
-                  </View>
-                  <Pressable onPress={() => dlog("fotgot")}>
-                    <Text style={tw`text-sm font-semibold text-primary-500`}>
-                      ¿Olvidaste la contraseña?
+                    <Text style={tw`ml-2 text-sm text-gray-500`}>
+                      Acepto términos y condiciones
                     </Text>
-                  </Pressable>
+                  </View>
                 </View>
                 <Button
                   variant="primary"
-                  title="Iniciar sesión"
-                  styleContainer="mt-5"
+                  title="Regístrar"
                   onPress={formik.handleSubmit}
                   loading={formik.isSubmitting}
                 />
@@ -129,11 +188,11 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
             )}
           </Formik>
         </View>
-        <View style={tw`h-0.3 w-full bg-gray-300 mt-10`} />
-        <View style={tw`flex-row items-center justify-center mt-10`}>
-          <Text style={tw`mr-2 text-sm text-gray-500`}>¿Es la primera vez que usas Coally?</Text>
-          <Pressable onPress={() => navigation.navigate("Register")}>
-            <Text style={tw`text-base font-bold text-primary-500`}>Regístrate</Text>
+        <View style={tw`h-0.3 w-full bg-gray-300 mt-6`} />
+        <View style={tw`flex-row items-center justify-center mt-5`}>
+          <Text style={tw`mr-2 text-sm text-gray-500`}>Si ya tienes cuenta,</Text>
+          <Pressable onPress={() => navigation.navigate("Login")}>
+            <Text style={tw`text-base font-bold text-primary-500`}>inicia sesión</Text>
           </Pressable>
         </View>
       </View>

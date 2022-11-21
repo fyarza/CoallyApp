@@ -1,7 +1,7 @@
-/**
- * These types indicate the shape of the data you expect to receive from your
- * API endpoint, assuming it's a JSON object like we have.
- */
+import { Auth } from "@/models"
+import { GeneralApiProblem } from "./apiProblem"
+
+export type GetLoginResult = { kind: "ok"; data: Auth } | GeneralApiProblem
 export interface EpisodeItem {
   title: string
   pubDate: string

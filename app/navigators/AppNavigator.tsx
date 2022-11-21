@@ -25,6 +25,7 @@ import {
 } from "../screens"
 import { DemoNavigator, DemoTabParamList } from "./DemoNavigator" // @demo remove-current-line
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
+import Toast from "react-native-toast-message"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -103,12 +104,15 @@ export const AppNavigator = observer(function AppNavigator(props: NavigationProp
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName))
 
   return (
-    <NavigationContainer
-      ref={navigationRef}
-      theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-      {...props}
-    >
-      <AppStack />
-    </NavigationContainer>
+    <>
+      <NavigationContainer
+        ref={navigationRef}
+        theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        {...props}
+      >
+        <AppStack />
+      </NavigationContainer>
+      <Toast position="bottom" bottomOffset={50} visibilityTime={3000} />
+    </>
   )
 })

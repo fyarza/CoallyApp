@@ -11,7 +11,6 @@ import Input from "@/components/input/input"
 import Feather from "@expo/vector-icons/Feather"
 import Button from "@/components/custom-button/custom-button"
 import AntDesign from "@expo/vector-icons/AntDesign"
-import Dropdown from "react-native-picker-select"
 import { observer } from "mobx-react-lite"
 import { Select } from "@/components"
 
@@ -87,19 +86,6 @@ export const RegisterScreen: FC<RegisterScreenProps> = observer(function Registe
                   }}
                   error={"userType" in formik.errors ? formik.errors.userType : ""}
                 />
-                {/* <Dropdown
-                  placeholder={{ label: "Seleccione", value: "" }}
-                  onValueChange={(value) => console.log(value)}
-                  items={[
-                    { label: "Empresa", value: "EMP" },
-                    { label: "Profesional", value: "PROF" },
-                  ]}
-                  style={{
-                    inputIOS: tw`text-base text-gray-500 bg-white`,
-                    inputAndroid: tw`text-xs text-gray-500 bg-white`,
-                    viewContainer: tw`mb-5 border border-red-500`,
-                  }}
-                /> */}
                 <Input
                   keyboardType="email-address"
                   autoCapitalize="none"

@@ -13,6 +13,9 @@ import AntDesign from "@expo/vector-icons/AntDesign"
 import Button from "@/components/custom-button/custom-button"
 import { observer } from "mobx-react-lite"
 import { dlog } from "@/utils/functions"
+import { useStores } from "@/models"
+import { loginData } from "@/services/api/auth-api"
+import Toast from "react-native-toast-message"
 
 interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
 
@@ -21,6 +24,8 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
   const [isVisible, setIsVisible] = useState(false)
   const refPassword = useRef<TextInput>(null)
   const [check, setCheck] = useState(false)
+  const { authStore } = useStores()
+  const { signIn } = authStore
   const initialValues = {
     email: "",
     password: "",
@@ -31,11 +36,21 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
     password: Yup.string().required("Es requerido"),
   })
 
-  const onSubmit = (values: any, actions: any) => {
-    setTimeout(() => {
-      console.log("hola mundo")
+  const onSubmit = async (values: any, actions: any) => {
+    const data: loginData = {
+      email: values.email,
+      password: values.password,
+    }
+    const result = await signIn(data)
+    if (result === "ok") {
       actions.setSubmitting(false)
-    }, 3000)
+      actions.resetForm()
+    } else {
+      Toast.show({
+        type: "error",
+        text1: "Email y/o contraseña incorrectos",
+      })
+    }
   }
 
   return (
@@ -94,7 +109,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
                   }
                   returnKeyType="send"
                   onSubmitEditing={() => {
-                    console.log("sent")
+                    formik.handleSubmit()
                   }}
                 />
 

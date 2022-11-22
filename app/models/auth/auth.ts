@@ -1,4 +1,4 @@
-import { AuthApi, loginData } from "@/services/api/auth-api"
+import { AuthApi, loginData, registerData } from "@/services/api/auth-api"
 import { AUTH_TOKEN, saveString } from "@/utils/storage"
 import { Instance, SnapshotIn, SnapshotOut, types } from "mobx-state-tree"
 
@@ -49,6 +49,20 @@ export const AuthModel = types
           await saveString(AUTH_TOKEN, "Bearer " + result.data.accessToken)
         }
         return result.kind
+      } catch (error) {
+        __DEV__ && console.log(error)
+        return Promise.reject(error)
+      }
+    },
+    signUp: async (data: registerData) => {
+      try {
+        const api = new AuthApi()
+        const result = await api.registerService(data)
+        if (result.kind === "ok" && result.data.status !== "error") {
+          return Promise.resolve(result)
+        } else {
+          return Promise.reject(result)
+        }
       } catch (error) {
         __DEV__ && console.log(error)
         return Promise.reject(error)

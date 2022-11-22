@@ -1,7 +1,8 @@
-import { Auth } from "@/models"
+import { Api, Auth } from "@/models"
 import { GeneralApiProblem } from "./apiProblem"
 
 export type GetLoginResult = { kind: "ok"; data: Auth } | GeneralApiProblem
+export type GetRegisterResult = { kind: "ok"; data: Api } | GeneralApiProblem
 export interface EpisodeItem {
   title: string
   pubDate: string

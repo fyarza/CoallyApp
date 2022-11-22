@@ -13,13 +13,16 @@ import Button from "@/components/custom-button/custom-button"
 import AntDesign from "@expo/vector-icons/AntDesign"
 import { observer } from "mobx-react-lite"
 import { Select } from "@/components"
+import { useStores } from "@/models"
+import { registerData } from "@/services/api/auth-api"
+import Toast from "react-native-toast-message"
 
 interface RegisterScreenProps extends AppStackScreenProps<"Register"> {}
 
 export const RegisterScreen: FC<RegisterScreenProps> = observer(function RegisterScreen(_props) {
   // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
-
+  const { authStore } = useStores()
+  const { signUp } = authStore
   const { navigation } = _props
 
   const [isVisible, setIsVisible] = useState(false)
@@ -36,18 +39,30 @@ export const RegisterScreen: FC<RegisterScreenProps> = observer(function Registe
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().email("Correo Invalido").required("Es requerido"),
-    password: Yup.string().required("Es requerido"),
+    password: Yup.string().required("Es requerido").min(6, "Minimo 6 caracteres"),
     confirmPassword: Yup.string()
       .oneOf([Yup.ref("password"), null], "Las contraseñas deben coincidir")
       .required("Es requerido"),
     userType: Yup.string().required("Es requerido"),
   })
 
-  const onSubmit = (values: any, actions: any) => {
-    setTimeout(() => {
-      console.log("hola mundo")
+  const onSubmit = async (values: any, actions: any) => {
+    const data: registerData = {
+      email: values.email,
+      password: values.password,
+      username: values.userType,
+    }
+    try {
+      const result = await signUp(data)
+      console.log("resultado", result)
       actions.setSubmitting(false)
-    }, 3000)
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: error?.data?.message || JSON.stringify(error),
+      })
+      console.log("error", error)
+    }
   }
   return (
     <Screen

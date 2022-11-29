@@ -20,12 +20,12 @@ import Config from "../config"
 import { useStores } from "../models" // @demo remove-current-line
 import {
   IntroScreen,
-  LoginScreen, // @demo remove-current-line
-  WelcomeScreen,
+  LoginScreen,
+  PasswordCodeScreen, // @demo remove-current-line
 } from "../screens"
-import { DemoNavigator, DemoTabParamList } from "./DemoNavigator" // @demo remove-current-line
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import Toast from "react-native-toast-message"
+import { TabParamList, TabNavigator } from "./TabNavigator"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -45,7 +45,9 @@ export type AppStackParamList = {
   Welcome: undefined
   Login: undefined // @demo remove-current-line
   Register: undefined
-  Demo: NavigatorScreenParams<DemoTabParamList> // @demo remove-current-line
+  PasswordCode: undefined
+  Search: undefined
+  Dashboard: NavigatorScreenParams<TabParamList> // @demo remove-current-line
   // 🔥 Your screens go here
 }
 
@@ -73,25 +75,20 @@ const AppStack = observer(function AppStack() {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName={isAuthenticated ? "Welcome" : "Intro"} // @demo remove-current-line
+      initialRouteName={isAuthenticated ? "Dashboard" : "Intro"} // @demo remove-current-line
     >
-      {/* @demo remove-block-start */}
       {isAuthenticated ? (
         <>
-          {/* @demo remove-block-end */}
-          <Stack.Screen name="Welcome" component={WelcomeScreen} />
-          {/* @demo remove-block-start */}
-          <Stack.Screen name="Demo" component={DemoNavigator} />
+          <Stack.Screen name="Dashboard" component={TabNavigator} />
         </>
       ) : (
         <>
           <Stack.Screen name="Intro" component={IntroScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen name="PasswordCode" component={PasswordCodeScreen} />
         </>
       )}
-      {/* @demo remove-block-end */}
-      {/** 🔥 Your screens go here */}
     </Stack.Navigator>
   )
 })

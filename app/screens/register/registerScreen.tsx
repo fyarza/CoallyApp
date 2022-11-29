@@ -46,23 +46,25 @@ export const RegisterScreen: FC<RegisterScreenProps> = observer(function Registe
     userType: Yup.string().required("Es requerido"),
   })
 
-  const onSubmit = async (values: any, actions: any) => {
-    const data: registerData = {
-      email: values.email,
-      password: values.password,
-      username: values.userType,
-    }
-    try {
-      const result = await signUp(data)
-      console.log("resultado", result)
-      actions.setSubmitting(false)
-    } catch (error) {
-      Toast.show({
-        type: "error",
-        text1: error?.data?.message || JSON.stringify(error),
-      })
-      console.log("error", error)
-    }
+  const onSubmit = (values: any, actions: any) => {
+    navigation.navigate("PasswordCode", values)
+    actions.setSubmitting(false)
+    // const data: registerData = {
+    //   email: values.email,
+    //   password: values.password,
+    //   username: values.userType,
+    // }
+    // try {
+    //   const result = await signUp(data)
+    //   console.log("resultado", result)
+    //   actions.setSubmitting(false)
+    // } catch (error) {
+    //   Toast.show({
+    //     type: "error",
+    //     text1: error?.data?.message || JSON.stringify(error),
+    //   })
+    //   console.log("error", error)
+    // }
   }
   return (
     <Screen

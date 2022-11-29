@@ -1,6 +1,13 @@
-import { AuthApi, loginData, registerData } from "@/services/api/auth-api"
+import {
+  AuthApi,
+  loginData,
+  registerData,
+  sendOtpData,
+  verifyOtpData,
+} from "@/services/api/auth-api"
 import { AUTH_TOKEN, saveString } from "@/utils/storage"
-import { Instance, SnapshotIn, SnapshotOut, types } from "mobx-state-tree"
+import { getRoot, Instance, SnapshotIn, SnapshotOut, types } from "mobx-state-tree"
+import { RootStore } from "../RootStore"
 
 /**
  * Model description here for TypeScript hints.
@@ -40,12 +47,18 @@ export const AuthModel = types
   .actions((self) => ({
     signIn: async (data: loginData) => {
       try {
+        const root: RootStore = getRoot(self)
         const api = new AuthApi()
         const result = await api.loginService(data)
         console.log("resultado", result)
         if (result.kind === "ok") {
           // guardamos los datos del token
           self.save(result.data)
+
+          // Guardando el Token en la tabla de autenticacion
+          root.authenticationStore.setAuthToken(result.data.accessToken)
+
+          // Guardando el Token en el LocalStorage para la peticiones
           await saveString(AUTH_TOKEN, "Bearer " + result.data.accessToken)
         }
         return result.kind
@@ -59,6 +72,34 @@ export const AuthModel = types
         const api = new AuthApi()
         const result = await api.registerService(data)
         if (result.kind === "ok" && result.data.status !== "error") {
+          return Promise.resolve(result)
+        } else {
+          return Promise.reject(result)
+        }
+      } catch (error) {
+        __DEV__ && console.log(error)
+        return Promise.reject(error)
+      }
+    },
+    sendOtpEmail: async (data: sendOtpData) => {
+      try {
+        const api = new AuthApi()
+        const result = await api.sendOTPService(data)
+        if (result.kind === "ok" && result.data.status !== "error") {
+          return Promise.resolve(result)
+        } else {
+          return Promise.reject(result)
+        }
+      } catch (error) {
+        __DEV__ && console.log(error)
+        return Promise.reject(error)
+      }
+    },
+    verifyOtpEmail: async (data: verifyOtpData) => {
+      try {
+        const api = new AuthApi()
+        const result = await api.verifyOTPService(data)
+        if (result.kind === "ok") {
           return Promise.resolve(result)
         } else {
           return Promise.reject(result)

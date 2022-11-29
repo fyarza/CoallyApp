@@ -21,7 +21,8 @@ import { useStores } from "../models" // @demo remove-current-line
 import {
   IntroScreen,
   LoginScreen,
-  PasswordCodeScreen, // @demo remove-current-line
+  PasswordCodeScreen,
+  SearchScreen, // @demo remove-current-line
 } from "../screens"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import Toast from "react-native-toast-message"
@@ -80,6 +81,7 @@ const AppStack = observer(function AppStack() {
       {isAuthenticated ? (
         <>
           <Stack.Screen name="Dashboard" component={TabNavigator} />
+          <Stack.Screen name="Search" component={SearchScreen} />
         </>
       ) : (
         <>

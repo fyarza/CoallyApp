@@ -101,8 +101,10 @@ export function TabNavigator() {
 }
 
 const $tabBar: ViewStyle = {
-  backgroundColor: colors.background,
+  backgroundColor: colors.palette.neutral100,
   borderTopColor: colors.transparent,
+  borderTopRightRadius: 25,
+  borderTopLeftRadius: 25,
 }
 
 const $tabBarItem: ViewStyle = {

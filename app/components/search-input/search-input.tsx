@@ -1,7 +1,7 @@
 import { dlog } from "@/utils/functions"
 import tw from "@/utils/tailwind"
 import * as React from "react"
-import { Pressable, Text, View } from "react-native"
+import { FlatList, Pressable, Text, View } from "react-native"
 import Feather from "@expo/vector-icons/Feather"
 import Ionicons from "@expo/vector-icons/Ionicons"
 import Input from "../input/input"
@@ -20,6 +20,7 @@ export interface ItemType {
 
 export const SearchInput: React.FC<SearchInputProps> = ({ value, setValue }) => {
   const [showModalFilter, setShowModalFilter] = React.useState(false)
+  const ref = React.useRef(null)
 
   const [data, setData] = React.useState<ItemType[]>([
     {
@@ -90,6 +91,8 @@ export const SearchInput: React.FC<SearchInputProps> = ({ value, setValue }) => 
     <View style={tw`px-6`}>
       <View style={tw`flex-row items-start`}>
         <Input
+          ref={ref}
+          autoFocus={true}
           autoCapitalize="none"
           placeholder="Buscar oportunidades"
           contenStyle={tw`px-1`}
@@ -97,7 +100,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({ value, setValue }) => 
           value={value}
           onChangeText={(e) => setValue(e)}
           LeftIconComponent={<Feather name="search" color="#c4c4c4" size={20} />}
-          returnKeyType="google"
+          returnKeyType="search"
           onSubmitEditing={() => {
             dlog("search")
           }}
@@ -116,9 +119,30 @@ export const SearchInput: React.FC<SearchInputProps> = ({ value, setValue }) => 
           </View>
         </Pressable>
       </View>
-      <View style={tw`flex-row`}>
-        <Text style={tw`text-xs text-gray-500`}>Resultados</Text>
-        <Text style={tw`ml-2 text-xs text-black`}>000</Text>
+      <View style={tw`mb-5`}>
+        <View style={tw`flex-row`}>
+          <Text style={tw`text-xs text-gray-500`}>Resultados</Text>
+          <Text style={tw`ml-2 text-xs text-black`}>000</Text>
+        </View>
+        <FlatList
+          data={data}
+          keyExtractor={(item) => item.id.toString()}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item }) => {
+            if (item.selected) {
+              return (
+                <View style={tw`px-4 py-2 mt-5 mr-2 rounded-xl bg-[#E5DCF7]`}>
+                  <Pressable style={tw`flex-row items-center`} onPress={() => onSelected(item.id)}>
+                    <Feather name="x" size={20} color="#202256" />
+                    <Text style={tw`ml-2 text-sm  text-[#202256]`}>{item.title}</Text>
+                  </Pressable>
+                </View>
+              )
+            }
+            return null
+          }}
+        />
       </View>
       <Filter
         open={showModalFilter}

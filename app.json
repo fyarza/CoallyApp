@@ -8,9 +8,9 @@
     "orientation": "portrait",
     "icon": "./assets/images/app-icon-all.png",
     "splash": {
-      "image": "./assets/images/splash-logo-all.png",
+      "image": "./assets/images/logofondoazul.png",
       "resizeMode": "contain",
-      "backgroundColor": "#191015"
+      "backgroundColor": "#202256"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -25,9 +25,9 @@
         "backgroundImage": "./assets/images/app-icon-android-adaptive-background.png"
       },
       "splash": {
-        "image": "./assets/images/splash-logo-android-universal.png",
+        "image": "./assets/images/logofondoazul.png",
         "resizeMode": "contain",
-        "backgroundColor": "#191015"
+        "backgroundColor": "#fff"
       }
     },
     "ios": {
@@ -35,10 +35,10 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.coallyapp",
       "splash": {
-        "image": "./assets/images/splash-logo-ios-mobile.png",
+        "image": "./assets/images/logofondoazul.png",
         "tabletImage": "./assets/images/splash-logo-ios-tablet.png",
         "resizeMode": "contain",
-        "backgroundColor": "#191015"
+        "backgroundColor": "#202256"
       }
     },
     "web": {
@@ -46,7 +46,7 @@
       "splash": {
         "image": "./assets/images/splash-logo-web.png",
         "resizeMode": "contain",
-        "backgroundColor": "#191015"
+        "backgroundColor": "#202256"
       }
     }
   }

@@ -81,7 +81,7 @@ const Input = React.forwardRef<TextInput, InputProps>(
           )}
         >
           {LeftIconComponent && React.isValidElement(LeftIconComponent) && (
-            <View style={tw.style(iconContainer, "ml-2")}>
+            <View style={tw.style(iconContainer, "mx-2")}>
               {React.cloneElement(LeftIconComponent, leftIconColorProp)}
             </View>
           )}
@@ -90,7 +90,7 @@ const Input = React.forwardRef<TextInput, InputProps>(
             onFocus={onFocus}
             onBlur={onBlur}
             style={tw.style(
-              "flex-1 text-sm text-gray-900  h-13",
+              "flex-1 text-sm text-gray-900  h-10",
               props.editable === false && "text-gray-500",
               error && "text-red-900",
             )}

@@ -150,12 +150,8 @@ function useSafeAreaInsetPadding(safeAreaEdges?: Edge[]) {
 }
 
 function ScreenWithoutScrolling(props: ScreenProps) {
-  const { style, contentContainerStyle, children } = props
-  return (
-    <View style={[$outerStyle, style]}>
-      <View style={[$innerStyle, contentContainerStyle]}>{children}</View>
-    </View>
-  )
+  const { style, children } = props
+  return <View style={[$outer2Style, style]}>{children}</View>
 }
 
 function ScreenWithScrolling(props: ScreenProps) {
@@ -245,6 +241,9 @@ const $outerStyle: ViewStyle = {
   flex: 1,
   height: "100%",
   width: "100%",
+}
+const $outer2Style: ViewStyle = {
+  flex: 1,
 }
 
 const $innerStyle: ViewStyle = {

@@ -1,12 +1,33 @@
-import { View, Text, ImageBackground, TouchableOpacity } from "react-native"
+import {
+  View,
+  Text,
+  ImageBackground,
+  TouchableOpacity,
+  RefreshControl,
+  ActivityIndicator,
+} from "react-native"
 import React, { useState } from "react"
 import { SwipeListView } from "react-native-swipe-list-view"
-import MaterialIcons from "@expo/vector-icons/MaterialIcons"
 import tw from "@/utils/tailwind"
+import TrashIcon from "@/icons/TrashIcon"
+import { observer } from "mobx-react-lite"
+import { useStores } from "@/models"
+import { dlog } from "@/utils/functions"
+import { colors } from "@/theme"
 
-interface Props {}
+interface Props {
+  value: string
+  page: number
+  setPage: (e: number) => void
+}
 
-const ListSearch: React.FC<Props> = () => {
+const ListSearch: React.FC<Props> = observer(({ value, page, setPage }) => {
+  const { projectsStore } = useStores()
+  const { ProjectsList, getProjects } = projectsStore
+  const [refresh, setRefresh] = useState(false)
+
+  const [loading, setLoading] = useState(false)
+
   const [listData, setListData] = useState([
     ...Array(10)
       .fill("")
@@ -39,21 +60,21 @@ const ListSearch: React.FC<Props> = () => {
     console.log("This row opened", rowKey)
   }
 
-  const renderItem = () => (
+  const renderItem = ({ item }) => (
     <>
       <View style={tw`h-0.3 w-full`} />
-      <View style={tw`flex-row items-start justify-between px-2 py-4 bg-[#F5F5F5] `}>
+      <View style={tw`flex-row items-start justify-between px-2 py-4 bg-[#F9F9F9] `}>
         <View style={tw`overflow-hidden rounded-xl`}>
           <ImageBackground
             source={{
-              uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYLWcAsGLdmwkQiL5l8fztvLxf_B6hrzf22UGr1BRX&s",
+              uri: item.imageUrl,
             }}
             style={tw`w-12 h-12`}
           />
         </View>
         <View style={tw`flex-1 ml-4`}>
-          <Text style={tw`text-base font-black text-gray-700`}>UX Designer</Text>
-          <Text style={tw`text-base font-bold text-blue-700`}>$5.500.000</Text>
+          <Text style={tw`text-base font-black text-[#393939]`}>{item.NombreOportunidad}</Text>
+          <Text style={tw`text-base font-black text-[#0B27E6]`}>{item.presupuesto}</Text>
           <Text style={tw`text-sm text-gray-400`}>Hace 1 hora</Text>
           <View style={tw`h-0.3 w-full bg-gray-300 mt-5`} />
         </View>
@@ -65,23 +86,52 @@ const ListSearch: React.FC<Props> = () => {
     <View style={tw`flex-1`}>
       <Text>{""}</Text>
       <TouchableOpacity
-        style={[
-          tw`absolute top-1 bottom-0 right-0 items-center justify-center bg-[#ffe1dd] w-35`,
-          // eslint-disable-next-line react-native/no-inline-styles
-          { borderTopRightRadius: 10, borderBottomRightRadius: 10 },
-        ]}
-        onPress={() => deleteRow(rowMap, data.item.key)}
+        style={tw`absolute top-1 bottom-0 right-0 items-center justify-center bg-[#ffe1dd] w-25`}
+        onPress={() => console.log(rowMap, data.item.key)}
       >
-        <MaterialIcons name="delete-outline" size={30} color="#c35649" />
-        <Text style={tw`text-[#c35649]`}>Eliminar</Text>
+        <TrashIcon />
+        <Text style={tw`text-[#E71C00]`}>Eliminar</Text>
       </TouchableOpacity>
     </View>
   )
 
+  const updatedList = async (pagina: number, updatePage: boolean) => {
+    setLoading(true)
+    try {
+      const data = {
+        skip: pagina,
+        limit: 20,
+      }
+      await getProjects(value !== "" ? { ...data, key: value } : data)
+      if (updatePage) setPage(page + 1)
+    } catch (error) {
+      dlog(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const onRefresh = async () => {
+    try {
+      setRefresh(true)
+      await updatedList(0, false)
+    } catch (error) {
+      dlog(error)
+    } finally {
+      setPage(0)
+      setRefresh(false)
+    }
+  }
+
+  const handleMore = () => {
+    updatedList(page, true)
+  }
+
+  const renderFooter = () => <FooterList loading={loading} />
+
   return (
     <SwipeListView
-      data={listData}
-      contentContainerStyle={tw`pb-25`}
+      data={ProjectsList}
       renderItem={renderItem}
       showsVerticalScrollIndicator={false}
       renderHiddenItem={renderHiddenItem}
@@ -92,7 +142,30 @@ const ListSearch: React.FC<Props> = () => {
       previewOpenDelay={3000}
       onRowDidOpen={onRowDidOpen}
       ListEmptyComponent={renderEmptyList}
+      ListFooterComponent={renderFooter}
+      refreshControl={
+        <RefreshControl
+          progressViewOffset={10}
+          colors={["#9Bd35A", "#689F38"]}
+          refreshing={refresh}
+          onRefresh={() => onRefresh()}
+        />
+      }
+      maxToRenderPerBatch={7}
+      onEndReached={handleMore}
+      onEndReachedThreshold={1}
     />
+  )
+})
+
+interface FooterListProps {
+  loading: boolean
+}
+const FooterList: React.FC<FooterListProps> = ({ loading }) => {
+  return (
+    <View>
+      <ActivityIndicator animating={loading} size="large" color={colors.palette.primary500} />
+    </View>
   )
 }
 

@@ -1,4 +1,3 @@
-import { dlog } from "@/utils/functions"
 import tw from "@/utils/tailwind"
 import * as React from "react"
 import { FlatList, Pressable, Text, View } from "react-native"
@@ -10,6 +9,7 @@ import { Filter } from "../filter/filter"
 export interface SearchInputProps {
   value: string
   setValue: (e: string) => void
+  onSearch?: () => void
 }
 
 export interface ItemType {
@@ -18,7 +18,7 @@ export interface ItemType {
   selected: boolean
 }
 
-export const SearchInput: React.FC<SearchInputProps> = ({ value, setValue }) => {
+export const SearchInput: React.FC<SearchInputProps> = ({ value, setValue, onSearch }) => {
   const [showModalFilter, setShowModalFilter] = React.useState(false)
   const ref = React.useRef(null)
 
@@ -102,7 +102,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({ value, setValue }) => 
           LeftIconComponent={<Feather name="search" color="#c4c4c4" size={20} />}
           returnKeyType="search"
           onSubmitEditing={() => {
-            dlog("search")
+            if (onSearch) onSearch()
           }}
         />
         <Pressable onPress={() => setShowModalFilter(true)}>

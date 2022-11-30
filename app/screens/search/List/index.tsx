@@ -14,7 +14,10 @@ import { observer } from "mobx-react-lite"
 import { useStores } from "@/models"
 import { dlog } from "@/utils/functions"
 import { colors } from "@/theme"
-
+import TimeAgo from "react-native-timeago"
+import moment from "moment"
+const esLocale = require("moment/locale/es")
+moment.locale("es", esLocale)
 interface Props {
   value: string
   page: number
@@ -75,7 +78,10 @@ const ListSearch: React.FC<Props> = observer(({ value, page, setPage }) => {
         <View style={tw`flex-1 ml-4`}>
           <Text style={tw`text-base font-black text-[#393939]`}>{item.NombreOportunidad}</Text>
           <Text style={tw`text-base font-black text-[#0B27E6]`}>{item.presupuesto}</Text>
-          <Text style={tw`text-sm text-gray-400`}>Hace 1 hora</Text>
+
+          <Text style={tw`text-sm text-gray-400 capitalize `}>
+            <TimeAgo time={item.fecha_inicio} />
+          </Text>
           <View style={tw`h-0.3 w-full bg-gray-300 mt-5`} />
         </View>
       </View>

@@ -27,6 +27,11 @@ import {
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import Toast from "react-native-toast-message"
 import { TabParamList, TabNavigator } from "./TabNavigator"
+import { IdiomasScreen } from "@/screens/idiomas/idiomasScreen"
+import { HabilidadesScreen } from "@/screens/habilidades/habilidadesScreen"
+import { EditPerfilScreen } from "@/screens/edit-perfil/edit-perfilScreen"
+import { SettingsScreen } from "@/screens/settings/settingsScreen"
+import { TestScreen } from "@/screens/test/testScreen"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -48,6 +53,11 @@ export type AppStackParamList = {
   Register: undefined
   PasswordCode: undefined
   Search: undefined
+  Idiomas: undefined
+  Habilidades: undefined
+  EditPerfil: undefined
+  Settings: undefined
+  Test: undefined
   Dashboard: NavigatorScreenParams<TabParamList> // @demo remove-current-line
   // 🔥 Your screens go here
 }
@@ -82,6 +92,11 @@ const AppStack = observer(function AppStack() {
         <>
           <Stack.Screen name="Dashboard" component={TabNavigator} />
           <Stack.Screen name="Search" component={SearchScreen} />
+          <Stack.Screen name="Idiomas" component={IdiomasScreen} />
+          <Stack.Screen name="Habilidades" component={HabilidadesScreen} />
+          <Stack.Screen name="EditPerfil" component={EditPerfilScreen} />
+          <Stack.Screen name="Settings" component={SettingsScreen} />
+          <Stack.Screen name="Test" component={TestScreen} />
         </>
       ) : (
         <>

@@ -17,7 +17,7 @@ import { colors } from "@/theme"
 import TimeAgo from "react-native-timeago"
 import moment from "moment"
 const esLocale = require("moment/locale/es")
-moment.locale("es", esLocale)
+moment.updateLocale("es", esLocale)
 interface Props {
   value: string
   page: number

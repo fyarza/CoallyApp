@@ -14,6 +14,7 @@ import OportinityIcon from "@/icons/OportunityIcon"
 import SearchIcon from "@/icons/SearchIcon"
 import FilterIcon from "@/icons/FilterIcon"
 import BellIcon from "@/icons/BellIcon"
+import CircularProgress from "react-native-circular-progress-indicator"
 
 interface HomeScreenProps extends TabScreenProps<"Home"> {}
 
@@ -24,7 +25,12 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen(_pro
   // Pull in navigation via hook
   const { navigation } = _props
   return (
-    <Screen preset="auto" safeAreaEdges={["top", "bottom"]} backgroundColor={colors.background}>
+    <Screen
+      preset="auto"
+      safeAreaEdges={["top", "bottom"]}
+      backgroundColor={colors.background}
+      statusBarStyle="dark"
+    >
       <View style={tw`p-6 flex-row items-center justify-between`}>
         <Text style={tw`text-3xl font-black text-black`}>¡Bienvenido!</Text>
         <BellIcon />
@@ -76,19 +82,21 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen(_pro
                   <Octicons name="upload" size={25} color={colors.palette.secondary500} />
                 </View>
               </View>
-              <View style={tw`w-40 h-45 shadow-lg bg-[#8875d1] px-4 pt-4 mt-4  rounded-lg `}>
-                <View style={tw`flex-row items-center`}>
-                  <Feather name="alert-triangle" size={20} color="#fff" />
-                  <Text style={tw`text-base text-white ml-2`}>¡Importante!</Text>
+              <Pressable onPress={() => navigation.navigate("Test")}>
+                <View style={tw`w-40 h-45 shadow-lg bg-[#8875d1] px-4 pt-4 mt-4  rounded-lg `}>
+                  <View style={tw`flex-row items-center`}>
+                    <Feather name="alert-triangle" size={20} color="#fff" />
+                    <Text style={tw`text-base text-white ml-2`}>¡Importante!</Text>
+                  </View>
+                  <Text style={tw`text-lg font-black text-white mt-2`}>
+                    Realiza los test{"\n"}y las preguntas{"\n"}
+                    motivacionales
+                  </Text>
+                  <View style={tw`items-end mt-3`}>
+                    <Feather name="thumbs-up" size={25} color="#fff" />
+                  </View>
                 </View>
-                <Text style={tw`text-lg font-black text-white mt-2`}>
-                  Realiza los test{"\n"}y las preguntas{"\n"}
-                  motivacionales
-                </Text>
-                <View style={tw`items-end mt-3`}>
-                  <Feather name="thumbs-up" size={25} color="#fff" />
-                </View>
-              </View>
+              </Pressable>
               <View style={tw`w-40 h-26 shadow-lg bg-[#f0702f] px-4 pt-2 mt-4  rounded-lg `}>
                 <Text style={tw`text-lg font-black text-white mt-2`}>
                   ¡Fórmate con{"\n"}
@@ -102,7 +110,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen(_pro
             <View style={tw``}>
               <View style={tw`w-40 px-4 py-3 ml-2 rounded-lg bg-[#f0702f] shadow-lg`}>
                 <View style={tw`items-end`}>
-                  <View
+                  {/* <View
                     style={tw`w-20 h-20 self-end  items-center justify-center rounded-full bg-[#fd974d]`}
                   >
                     <View
@@ -110,7 +118,16 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen(_pro
                     >
                       <Text style={tw`text-white text-lg font-black`}>25%</Text>
                     </View>
-                  </View>
+                  </View> */}
+                  <CircularProgress
+                    value={50}
+                    radius={40}
+                    inActiveStrokeColor={"#fd974d"}
+                    progressValueColor={"#fff"}
+                    activeStrokeColor={"#681B01"}
+                    activeStrokeWidth={15}
+                    valueSuffix={"%"}
+                  />
                 </View>
                 <Text style={tw`text-white text-lg`}>
                   No{"\n"}

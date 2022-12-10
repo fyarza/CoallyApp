@@ -4,6 +4,7 @@ import { AuthModel } from "./auth/auth"
 import { AuthenticationStoreModel } from "./AuthenticationStore" // @demo remove-current-line
 import { EpisodeStoreModel } from "./EpisodeStore" // @demo remove-current-line
 import { ProjectStoreModel } from "./project-store/project-store"
+import { UserModel } from "./user/user"
 
 /**
  * A RootStore model.
@@ -14,6 +15,7 @@ export const RootStoreModel = types.model("RootStore").props({
   authStore: types.optional(AuthModel, {} as any),
   apiStore: types.optional(ApiModel, {} as any),
   projectsStore: types.optional(ProjectStoreModel, {} as any),
+  userStore: types.optional(UserModel, {} as any),
 })
 
 /**

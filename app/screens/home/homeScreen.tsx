@@ -72,16 +72,18 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen(_pro
         >
           <View style={tw`flex-row justify-between mt-5 pb-10 px-6`}>
             <View>
-              <View style={tw`w-40 h-35 shadow-lg bg-white px-4 pt-4  rounded-lg `}>
-                <Text style={tw`text-base text-primary-500`}>¡Necesario!</Text>
-                <Text style={tw`text-lg font-black text-primary-500 mt-2`}>
-                  Sube tu hoja{"\n"}
-                  de vida
-                </Text>
-                <View style={tw`items-end `}>
-                  <Octicons name="upload" size={25} color={colors.palette.secondary500} />
+              <Pressable onPress={() => navigation.navigate("UploadCv")}>
+                <View style={tw`w-40 h-35 shadow-lg bg-white px-4 pt-4  rounded-lg `}>
+                  <Text style={tw`text-base text-primary-500`}>¡Necesario!</Text>
+                  <Text style={tw`text-lg font-black text-primary-500 mt-2`}>
+                    Sube tu hoja{"\n"}
+                    de vida
+                  </Text>
+                  <View style={tw`items-end `}>
+                    <Octicons name="upload" size={25} color={colors.palette.secondary500} />
+                  </View>
                 </View>
-              </View>
+              </Pressable>
               <Pressable onPress={() => navigation.navigate("Test")}>
                 <View style={tw`w-40 h-45 shadow-lg bg-[#8875d1] px-4 pt-4 mt-4  rounded-lg `}>
                   <View style={tw`flex-row items-center`}>

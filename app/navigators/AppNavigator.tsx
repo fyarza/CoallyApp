@@ -22,7 +22,9 @@ import {
   IntroScreen,
   LoginScreen,
   PasswordCodeScreen,
-  SearchScreen, // @demo remove-current-line
+  SearchScreen,
+  UploadCvFormScreen,
+  UploadCvScreen, // @demo remove-current-line
 } from "../screens"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import Toast from "react-native-toast-message"
@@ -58,6 +60,8 @@ export type AppStackParamList = {
   EditPerfil: undefined
   Settings: undefined
   Test: undefined
+  UploadCv: undefined
+  UploadCvForm: undefined
   Dashboard: NavigatorScreenParams<TabParamList> // @demo remove-current-line
   // 🔥 Your screens go here
 }
@@ -97,6 +101,8 @@ const AppStack = observer(function AppStack() {
           <Stack.Screen name="EditPerfil" component={EditPerfilScreen} />
           <Stack.Screen name="Settings" component={SettingsScreen} />
           <Stack.Screen name="Test" component={TestScreen} />
+          <Stack.Screen name="UploadCv" component={UploadCvScreen} />
+          <Stack.Screen name="UploadCvForm" component={UploadCvFormScreen} />
         </>
       ) : (
         <>

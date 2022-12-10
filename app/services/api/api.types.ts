@@ -6,6 +6,7 @@ export type GetRegisterResult = { kind: "ok"; data: Api } | GeneralApiProblem
 export type GetSendOtpResult = { kind: "ok"; data: Api } | GeneralApiProblem
 export type VerifyOTPResult = { kind: "ok"; data: Api } | GeneralApiProblem
 export type GetProjectsResult = { kind: "ok"; data: Project[] } | GeneralApiProblem
+export type GetUploadCvResult = { kind: "ok"; data: Api } | GeneralApiProblem
 
 export interface EpisodeItem {
   title: string

@@ -2,17 +2,17 @@ import React, { FC, useRef } from "react"
 import { observer } from "mobx-react-lite"
 import { View, Text, Pressable, TextInput } from "react-native"
 import { AppStackScreenProps } from "@/navigators"
-import { Screen } from "@/components"
-// import { useNavigation } from "@react-navigation/native"
-// import { useStores } from "@/models"
+import { InputTags, Screen } from "@/components"
+import { useStores } from "@/models"
 import Feather from "@expo/vector-icons/Feather"
 import { colors } from "@/theme"
 import tw from "@/utils/tailwind"
 import { Formik } from "formik"
 import * as Yup from "yup"
 import Input from "@/components/input/input"
-import AntDesign from "@expo/vector-icons/AntDesign"
 import Button from "@/components/custom-button/custom-button"
+import { dlog } from "@/utils/functions"
+import { readCV } from "@/services/api/user-api"
 
 interface UploadCvFormScreenProps extends AppStackScreenProps<"UploadCvForm"> {}
 
@@ -20,7 +20,9 @@ export const UploadCvFormScreen: FC<UploadCvFormScreenProps> = observer(function
   _props,
 ) {
   // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
+  const { userStore, authStore } = useStores()
+  const { setReadCvFromBody } = userStore
+  const { id } = authStore
 
   // Pull in navigation via hook
   const { navigation } = _props
@@ -39,6 +41,8 @@ export const UploadCvFormScreen: FC<UploadCvFormScreenProps> = observer(function
     actualProfession: "",
     urlLinkedin: "",
     idioma: "",
+    aptitudes: [],
+    lenguajes: [],
   }
 
   const validationSchema = Yup.object().shape({
@@ -48,10 +52,42 @@ export const UploadCvFormScreen: FC<UploadCvFormScreenProps> = observer(function
     email: Yup.string().email("Correo invalido").required("Es requerido"),
     actualProfession: Yup.string().required("Es requerido"),
     urlLinkedin: Yup.string().url("Url invalida").required("Es requerido"),
+    aptitudes: Yup.array(),
+    lenguajes: Yup.array(),
   })
 
-  const onSubmit = (values: any, actions: any) => {
-    console.log(values)
+  const onSubmit = async (values: any, actions: any) => {
+    try {
+      const languages = values.lenguajes.map((item: string) => {
+        return {
+          Language: item,
+          Nivel: "(Limited Working)",
+        }
+      })
+      const data: readCV = {
+        usuario: id,
+        infoCV: {
+          info_personal: {
+            nombre: `${values.name} ${values.lastName}`,
+            profesion_actual: values.actualProfession,
+            ubicacion: values.location,
+          },
+          contacto: ["00000000 (Mobile)", values.email, values.urlLinkedin],
+          aptitudes_principales: values.aptitudes,
+          languages,
+        },
+      }
+
+      const res = await setReadCvFromBody(data)
+      if (res) {
+        actions.resetForm()
+        navigation.navigate("Dashboard")
+      }
+    } catch (error) {
+      dlog(error)
+    } finally {
+      actions.setSubmitting(false)
+    }
   }
   return (
     <Screen preset="auto" safeAreaEdges={["top", "bottom"]} backgroundColor={colors.background}>
@@ -167,46 +203,15 @@ export const UploadCvFormScreen: FC<UploadCvFormScreenProps> = observer(function
                   console.log("next")
                 }}
               />
-              <View style={tw`mb-6`}>
-                <Text style={tw`mb-1 text-sm text-primary-500`}>Agregar idioma</Text>
-                <Input
-                  keyboardType="default"
-                  autoCapitalize="none"
-                  contenStyle={tw`px-3`}
-                  containerStyle={tw`w-full`}
-                  value={formik.values.idioma}
-                  onChangeText={formik.handleChange("idioma")}
-                  error={"idioma" in formik.errors ? formik.errors.idioma : ""}
-                  returnKeyType="next"
-                  onSubmitEditing={() => {
-                    console.log("next")
-                  }}
-                />
-                <View style={tw`flex-row items-center mt--2`}>
-                  <Text style={tw`mr-4 text-sm text-primary-500`}>Añadir</Text>
-                  <AntDesign name="pluscircleo" size={20} color={colors.palette.secondary500} />
-                </View>
-              </View>
-              <View style={tw`mb-6`}>
-                <Text style={tw`mb-1 text-sm text-primary-500`}>Agregar experiencia</Text>
-                <Input
-                  keyboardType="default"
-                  autoCapitalize="none"
-                  contenStyle={tw`px-3`}
-                  containerStyle={tw`w-full`}
-                  value={formik.values.idioma}
-                  onChangeText={formik.handleChange("idioma")}
-                  error={"idioma" in formik.errors ? formik.errors.idioma : ""}
-                  returnKeyType="next"
-                  onSubmitEditing={() => {
-                    console.log("next")
-                  }}
-                />
-                <View style={tw`flex-row items-center mt--2`}>
-                  <Text style={tw`mr-4 text-sm text-primary-500`}>Añadir</Text>
-                  <AntDesign name="pluscircleo" size={20} color={colors.palette.secondary500} />
-                </View>
-              </View>
+              <InputTags
+                onChangeTags={(lenguaje) => formik.setFieldValue("lenguajes", lenguaje)}
+                label="Agregar idioma"
+              />
+              <InputTags
+                onChangeTags={(aptitud) => formik.setFieldValue("aptitudes", aptitud)}
+                label="Agregar Aptitudes Principales"
+              />
+
               <View style={tw`px-12 my-4`}>
                 <Button
                   variant="primary"

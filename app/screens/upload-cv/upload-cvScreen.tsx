@@ -24,12 +24,15 @@ interface typeFile {
 
 export const UploadCvScreen: FC<UploadCvScreenProps> = observer(function UploadCvScreen(_props) {
   const [doc, setDoc] = useState<typeFile>(null)
+  const [docPersonalized, setDocPersonalized] = useState<typeFile>(null)
   // Pull in one of our MST stores
   const { userStore, authStore } = useStores()
-  const { setUploadCv } = userStore
+  const { setUploadCv, setUploadCvPersonalized } = userStore
   const { id } = authStore
   const [selected, setSelected] = useState(false)
+  const [selectedPersonalized, setSelectedPersonalized] = useState(false)
   const [error, setError] = useState(false)
+  const [errorPersonalized, setErrorPersonalized] = useState(false)
   const [loading, setLoading] = useState(false)
   // Pull in navigation via hook
   const { navigation } = _props
@@ -43,7 +46,6 @@ export const UploadCvScreen: FC<UploadCvScreenProps> = observer(function UploadC
       const { type } = result
       if (type !== "cancel") {
         const { mimeType, name, size, uri } = result
-        console.log(result)
         const fileToUpload = {
           name,
           size,
@@ -77,6 +79,50 @@ export const UploadCvScreen: FC<UploadCvScreenProps> = observer(function UploadC
       setLoading(false)
     }
   }
+
+  const pickDocumentPersonalized = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: "application/pdf",
+        copyToCacheDirectory: true,
+      })
+      const { type } = result
+      if (type !== "cancel") {
+        const { mimeType, name, size, uri } = result
+        const fileToUpload = {
+          name,
+          size,
+          uri,
+          type: mimeType,
+        }
+        await postDocumentPersonalized(fileToUpload)
+      }
+    } catch (error) {
+      console.log("error", error)
+    }
+  }
+
+  const postDocumentPersonalized = async (fileToUpload: any) => {
+    try {
+      setLoading(true)
+
+      const data: uploadCvData = {
+        name: fileToUpload.name,
+        size: fileToUpload.size,
+        type: fileToUpload.type,
+        uri: fileToUpload.uri,
+        user: id,
+      }
+      await setUploadCvPersonalized(data)
+      setDocPersonalized(fileToUpload)
+    } catch (error) {
+      setError(true)
+      console.log("error", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <Screen preset="auto" safeAreaEdges={["bottom", "top"]} backgroundColor={colors.background}>
       <Spinner visible={loading} />
@@ -136,14 +182,42 @@ export const UploadCvScreen: FC<UploadCvScreenProps> = observer(function UploadC
       </View>
 
       <View style={tw`items-center mt-25`}>
-        <View style={tw`px-4 py-4 bg-[#f9f9f9] border border-gray-300 shadow-sm w-80 rounded-xl `}>
-          <Text style={tw`mb-2 text-base text-primary-500`}>Hoja de vida</Text>
-          <Text style={tw`text-base font-black text-primary-500`}>General</Text>
-          <View style={tw`flex-row items-center justify-between mt-3`}>
-            <Text style={tw`text-base text-black`}>PDF de tu hoja de vida general.</Text>
-            <Octicons name="upload" size={30} color={colors.palette.secondary500} />
+        <Pressable
+          onPress={() => {
+            setSelectedPersonalized(true)
+            setErrorPersonalized(false)
+            pickDocumentPersonalized()
+          }}
+        >
+          <View
+            style={tw`px-4 py-4 ${
+              selectedPersonalized ? "bg-white shadow-lg" : "bg-[#f9f9f9] border border-gray-300 "
+            } w-80 rounded-xl `}
+          >
+            <Text style={tw`mb-2 text-base text-primary-500`}>Hoja de vida</Text>
+            <Text style={tw`text-base font-black text-primary-500`}>General</Text>
+            <View style={tw`flex-row items-center justify-between mt-3`}>
+              <Text style={tw`text-base text-black`}>PDF de tu hoja de vida general.</Text>
+              <Octicons name="upload" size={30} color={colors.palette.secondary500} />
+            </View>
+            {errorPersonalized === true ? (
+              <Text style={tw`mt-3 text-base text-red-500`}>Error al subir el documento</Text>
+            ) : null}
+            {docPersonalized !== null ? (
+              <Pressable
+                onPress={() => {
+                  setDocPersonalized(null)
+                }}
+              >
+                <View style={tw`flex-row items-center px-2 py-1 bg-[#e5dcf7] w-50 rounded-lg mt-2`}>
+                  <AntDesign name="close" size={20} color={colors.palette.secondary500} />
+                  <Text style={tw`ml-4 text-base text-primary-500`}>PDF Doc..</Text>
+                </View>
+              </Pressable>
+            ) : null}
           </View>
-        </View>
+        </Pressable>
+
         <Pressable onPress={() => navigation.navigate("UploadCvForm")}>
           <View
             style={tw`px-4 py-4 mt-3 bg-[#f9f9f9] border border-gray-300 shadow-sm w-80 rounded-xl `}

@@ -1,4 +1,4 @@
-import { UserApi } from "@/services/api/user-api"
+import { readCV, uploadCvData, UserApi } from "@/services/api/user-api"
 import { Instance, SnapshotIn, SnapshotOut, types } from "mobx-state-tree"
 
 /**
@@ -9,10 +9,46 @@ export const UserModel = types
   .props({})
   .views((self) => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions((self) => ({
-    setUploadCv: async (data) => {
+    setUploadCv: async (data: uploadCvData) => {
       try {
         const api = new UserApi()
         const result = await api.uploadCv(data)
+        if (result.kind === "ok") {
+          if (result.data.status === "success") {
+            return Promise.resolve(result.data)
+          } else {
+            return Promise.reject(result.data)
+          }
+        } else {
+          return Promise.reject(result)
+        }
+      } catch (error) {
+        __DEV__ && console.log(error)
+        return Promise.reject(error)
+      }
+    },
+    setUploadCvPersonalized: async (data: uploadCvData) => {
+      try {
+        const api = new UserApi()
+        const result = await api.uploadCvPersonalized(data)
+        if (result.kind === "ok") {
+          if (result.data.status === "success") {
+            return Promise.resolve(result.data)
+          } else {
+            return Promise.reject(result.data)
+          }
+        } else {
+          return Promise.reject(result)
+        }
+      } catch (error) {
+        __DEV__ && console.log(error)
+        return Promise.reject(error)
+      }
+    },
+    setReadCvFromBody: async (data: readCV) => {
+      try {
+        const api = new UserApi()
+        const result = await api.readCvFromBody(data)
         if (result.kind === "ok") {
           if (result.data.status === "success") {
             return Promise.resolve(result.data)
